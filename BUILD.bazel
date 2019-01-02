@@ -1,0 +1,44 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_path", "go_test")
+
+# gazelle:prefix github.com/robfig/bazel-imagick
+gazelle(name = "gazelle")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "main.go",
+        "webp.go",
+        "xmp.go",
+    ],
+    importpath = "github.com/robfig/bazel-imagick",
+    visibility = ["//visibility:private"],
+    deps = [
+        "@com_github_beevik_etree//:go_default_library",
+        "@com_github_robfig_imagick//imagick:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "bazel-imagick",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "go_default_test",
+    srcs = ["image_processing_test.go"],
+    data = glob(["testdata/**"]),
+    embed = [":go_default_library"],
+    deps = [
+        "@com_github_beevik_etree//:go_default_library",
+        "@com_github_robfig_imagick//imagick:go_default_library",
+        "@com_github_stretchr_testify//assert:go_default_library",
+        "@com_github_stretchr_testify//require:go_default_library",
+    ],
+)
+
+go_path(
+    name = "gopath",
+    deps = [":go_default_library"],
+)
