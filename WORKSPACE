@@ -39,7 +39,7 @@ go_repository(
 
 go_repository(
     name = "com_github_robfig_imagick",
-    commit = "6656e0a5523d77ec1484d83c551ba881470e035d",
+    commit = "bab8a177aeb795e58565d9c7b389aecfb9c6943f",
     importpath = "github.com/robfig/imagick",
     build_file_proto_mode = "disable",
     build_file_name = "BUILD.bazel",
