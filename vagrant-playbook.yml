@@ -1,0 +1,44 @@
+---
+- name: configure to build bazel-imagick
+  become: yes
+  hosts: all
+
+  tasks:
+
+    - name: add ius-release yum repo for git2
+      yum:
+        name: https://centos7.iuscommunity.org/ius-release.rpm
+
+    - name: add bazel yum repo
+      yum_repository:
+        name: copr
+        description: Copr repo for bazel owned by vbatts
+        baseurl: https://copr-be.cloud.fedoraproject.org/results/vbatts/bazel/epel-7-$basearch/
+        gpgcheck: yes
+        gpgkey: https://copr-be.cloud.fedoraproject.org/results/vbatts/bazel/pubkey.gpg
+        repo_gpgcheck: no
+
+    - name: install bazel and dependencies
+      yum:
+        name:
+          - unzip
+          - patch
+          - git2u-all
+          - gcc-c++
+          - bazel
+          - golang
+
+    - name: configure bashrc
+      blockinfile:
+        path: /home/vagrant/.bashrc
+        content: |
+          cd /vagrant
+          echo "##########################################"
+          echo "Build, run and test with Go:"
+          echo "	go build -o bazel-imagick . && ./bazel-imagick"
+          echo "	go test"
+          echo ""
+          echo "Build, run and test with Bazel:"
+          echo "	bazel run :bazel-imagick"
+          echo "	bazel test :go_default_test"
+          echo "##########################################"
